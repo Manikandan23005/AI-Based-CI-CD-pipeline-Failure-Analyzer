@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD Pipeline Failure Analyzer</title>
+    <!-- Strict Manual Fetch Architecture over Meta-Refresh overrides -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+    <!-- Cyberpunk Animated Background Container -->
+    <div id="particles-js"></div>
+
+    {% if current_user.is_authenticated %}
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4 class="text-center py-4 bg-primary text-white sidebar-title">
+            <i class="fas fa-network-wired pulse-badge"></i> CI/CD Analyzer
+        </h4>
+        <nav class="nav flex-column mt-3">
+            <a class="nav-link" href="{{ url_for('dashboard') }}"><i class="fas fa-home me-2"></i> Dashboard</a>
+            <a class="nav-link" href="{{ url_for('builds_list') }}"><i class="fas fa-tasks me-2"></i> Pipeline Builds</a>
+            <hr class="border-secondary mx-3 my-2">
+            <a class="nav-link text-info fw-bold" href="#" id="manualSyncBtn" onclick="triggerManualSync()"><i class="fas fa-sync-alt me-2" id="syncSpinner"></i> Fetch Latest Builds</a>
+        </nav>
+        <div class="mt-auto p-3 text-center">
+            <a class="btn btn-outline-danger w-100 fw-bold border-0 shadow-none mb-3" href="{{ url_for('logout') }}" style="color: #ff2a2a;"><i class="fas fa-power-off me-2"></i> LOGOUT</a>
+            <div class="text-muted small" style="opacity: 0.6; line-height: 1.3;">
+                "The proposed system enhances Jenkins by adding automated failure intelligence and cross-pipeline observability securely."
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-content ps-5 pe-5 pt-4 pb-4" {% if not current_user.is_authenticated %}style="margin-left: 0; width: 100vw;"{% endif %}>
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function triggerManualSync() {
+            const btn = document.getElementById('manualSyncBtn');
+            const spinner = document.getElementById('syncSpinner');
+            
+            btn.classList.add('disabled');
+            spinner.classList.add('fa-spin');
+            
+            fetch("{{ url_for('manual_sync') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            }).then(response => response.json())
+              .then(data => {
+                  window.location.href = "{{ url_for('dashboard') }}";
+              }).catch(err => {
+                  alert("Failed to synchronize with Jenkins infrastructure: " + err);
+                  btn.classList.remove('disabled');
+                  spinner.classList.remove('fa-spin');
+              });
+        }
+    </script>
+    
+    <!-- Particles.js Library for Animated Aesthetics -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

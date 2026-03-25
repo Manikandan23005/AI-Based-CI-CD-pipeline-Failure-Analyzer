@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Custom High-Fidelity Landing Animations */
+    .hero-section {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow 3s ease-in-out infinite alternate;
+        margin-bottom: 20px;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #b3c5df;
+        max-width: 700px;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    .feature-card {
+        background: rgba(30, 36, 50, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 30px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 15px 35px rgba(0, 242, 254, 0.15);
+        border-color: rgba(0, 242, 254, 0.4);
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        background: -webkit-linear-gradient(#00f2fe, #4facfe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .cta-btn {
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border-radius: 50px;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-primary {
+        background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+        border: none;
+        color: #0b0f19;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+    }
+
+    .cta-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0, 242, 254, 0.8);
+        color: #000;
+    }
+
+    .cta-secondary {
+        background: transparent;
+        border: 2px solid #4facfe;
+        color: #4facfe;
+    }
+    
+    .cta-secondary:hover {
+        background: rgba(79, 172, 254, 0.1);
+        color: #00f2fe;
+        border-color: #00f2fe;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+        }
+        to {
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.6), 0 0 30px rgba(79, 172, 254, 0.4);
+        }
+    }
+    
+    .floating {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
+
+<div class="container position-relative z-3">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="floating mb-4">
+            <i class="fas fa-microchip" style="font-size: 5rem; background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+        </div>
+        <h1 class="hero-title text-uppercase">CI/CD Pipeline Failure Analyzer</h1>
+        <p class="hero-subtitle">
+            Instantly intercept Jenkins stack crashes and automatically deploy intelligent natively integrated Groq Llama-3 AI analytics. Never manually hunt through millions of lines of traceback logs ever again.
+        </p>
+        <div class="d-flex gap-4 mt-3">
+            <a href="{{ url_for('signup') }}" class="btn cta-btn cta-primary text-decoration-none">
+                <i class="fas fa-rocket me-2"></i> Get Started Free
+            </a>
+            <a href="{{ url_for('login') }}" class="btn cta-btn cta-secondary text-decoration-none">
+                <i class="fas fa-sign-in-alt me-2"></i> Developer Login
+            </a>
+        </div>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="row g-5 pb-5">
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <i class="fas fa-brain feature-icon"></i>
+                <h4 class="text-white fw-bold mb-3">AI Based Root Diagnostics</h4>
+                <p class="text-muted small">
+                    Autonomously cross-reference syntax bugs, missing parameters, and runtime configurations inside Jenkins utilizing the raw intelligence of Groq's 70-Billion Parameter network natively.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card text-center" style="animation-delay: 0.2s;">
+                <i class="fas fa-sync-alt feature-icon"></i>
+                <h4 class="text-white fw-bold mb-3">On-Demand Sync Architecture</h4>
+                <p class="text-muted small">
+                    Securely wrap your development cycles internally pulling real-time pipeline endpoints immediately caching traces in responsive SQL execution environments.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card text-center" style="animation-delay: 0.4s;">
+                <i class="fas fa-paint-brush feature-icon"></i>
+                <h4 class="text-white fw-bold mb-3">High-Fidelity Glassmorphism</h4>
+                <p class="text-muted small">
+                    Interact directly through robust premium WebGL environments wrapped purely in gorgeous native frontend integrations, frosted panels, and dynamic cyber-particles seamlessly.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

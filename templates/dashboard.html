@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Pipeline Dashboard</h2>
+    <span class="badge bg-primary fs-6" id="dashboardSyncStatus"><i class="fas fa-server"></i> Active Standby</span>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card border-0 bg-secondary-dark h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title text-muted text-uppercase mb-3">Total Analyzed Builds</h5>
+                <h2 class="display-4 fw-bold text-white">{{ total }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card border-0 bg-secondary-dark h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title text-success text-uppercase mb-3">Successful Builds</h5>
+                <h2 class="display-4 fw-bold text-success">{{ success }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card border-0 bg-secondary-dark h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title text-danger text-uppercase mb-3">Failed Builds</h5>
+                <h2 class="display-4 fw-bold text-danger">{{ failed }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <!-- Failure Distribution Chart -->
+    <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="card border-0 bg-secondary-dark h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-4 border-bottom pb-2 border-secondary text-white"><i class="fas fa-chart-pie me-2 text-primary pulse-badge border rounded-circle p-1"></i> Pipeline Execution Rates</h5>
+                <div class="chart-container" style="position: relative; height:300px; width:100%">
+                    <canvas id="failureChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Failures -->
+    <div class="col-lg-6">
+        <div class="card border-0 bg-secondary-dark h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-4 border-bottom pb-2 border-secondary text-white"><i class="fas fa-exclamation-triangle text-warning me-2"></i> Recently Analyzed Failures</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover table-borderless align-middle">
+                        <thead class="text-muted small">
+                            <tr>
+                                <th>Job</th>
+                                <th>Build</th>
+                                <th>Cause</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in recent_failures %}
+                            <tr>
+                                <td>{{ record.job.name }}</td>
+                                <td><span class="badge bg-secondary">#{{ record.build_number }}</span></td>
+                                <td><span class="badge 
+                                    {% if record.failure_type == 'Dependency Error' %}bg-info
+                                    {% elif record.failure_type == 'Environment Issue' %}bg-warning text-dark
+                                    {% elif record.failure_type == 'Test Failure' %}bg-danger
+                                    {% elif record.failure_type == 'Build Failure' %}bg-secondary
+                                    {% else %}bg-dark border border-secondary{% endif %}
+                                    ">{{ record.root_cause_title }}</span>
+                                </td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('build_details', build_id=record.id) }}">Analyze</a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="4" class="text-center text-muted">No recent failures observed. Great job!</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

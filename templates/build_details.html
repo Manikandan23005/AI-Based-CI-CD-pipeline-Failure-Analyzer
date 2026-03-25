@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('builds_list') }}" class="btn btn-sm btn-outline-secondary mb-3"><i class="fas fa-arrow-left"></i> Back to Builds</a>
+    <h2 class="fw-bold"><i class="fas fa-info-circle text-primary me-2"></i> Build Configuration & Analysis</h2>
+</div>
+
+<div class="row g-4">
+    <!-- Build Metadata & Info -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm bg-secondary-dark mb-4 h-100">
+            <div class="card-body">
+                <h5 class="card-title text-uppercase text-muted border-bottom border-secondary pb-3 mb-4">Pipeline Meta</h5>
+                
+                <div class="mb-3">
+                    <span class="text-muted small text-uppercase">Job Name</span>
+                    <h5 class="mb-0 text-light fw-bold">{{ build.job.name }}</h5>
+                </div>
+                
+                <div class="mb-3">
+                    <span class="text-muted small text-uppercase">Build Number</span>
+                    <p class="mb-0 lead text-light">#{{ build.build_number }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <span class="text-muted small text-uppercase">Timestamp</span>
+                    <p class="mb-0 text-light"><i class="far fa-clock"></i> {{ build.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC') }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <span class="text-muted small text-uppercase">Duration</span>
+                    <p class="mb-0 text-light">{{ "%.2f"|format(build.duration_ms / 1000) }} seconds</p>
+                </div>
+
+                <div>
+                    <span class="text-muted small text-uppercase d-block mb-2">Build Status</span>
+                    {% if build.status == 'SUCCESS' %}
+                    <span class="badge bg-success fs-6 px-3 py-2"><i class="fas fa-check-circle me-1"></i> Success</span>
+                    {% elif build.status == 'FAILURE' %}
+                    <span class="badge bg-danger fs-6 px-3 py-2"><i class="fas fa-times-circle me-1"></i> Failure</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark fs-6 px-3 py-2"><i class="fas fa-minus-circle me-1"></i> Aborted</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Analysis Card -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm bg-secondary-dark mb-4 {% if build.status == 'FAILURE' %}border-start border-danger border-4{% else %}border-start border-success border-4{% endif %}">
+            <div class="card-body">
+                <h5 class="card-title mb-4 border-bottom border-secondary pb-2 text-white">
+                    <i class="fas fa-robot text-primary me-2"></i> ML-Powered Analyzer Diagnosis
+                </h5>
+                
+                <h6 class="text-muted text-uppercase small mb-2">Predicted Failure Type</h6>
+                <div class="mb-4">
+                    {% if build.failure_type != 'None' %}
+                    <h3 class="fw-bold text-danger">{{ build.failure_type }}</h3>
+                    {% else %}
+                    <h4 class="fw-bold text-success"><i class="fas fa-check"></i> No Errors Detected</h4>
+                    {% endif %}
+                </div>
+
+                {% if build.failure_type != 'None' %}
+                <div class="alert alert-danger border-0 shadow-sm mb-4">
+                    <h5 class="fw-bold mb-2"><i class="fas fa-search text-danger me-2"></i> {{ build.root_cause_title or 'Diagnosis Found' }}</h5>
+                    <p class="mb-0 text-dark">{{ build.explanation or 'The exact reason was unable to be translated to natural language.' }}</p>
+                </div>
+                {% endif %}
+
+                <div class="border rounded bg-dark p-3 mb-3 position-relative" style="overflow-x: auto;">
+                    <span class="position-absolute top-0 end-0 badge bg-secondary mt-2 me-2">Raw Jenkins Context Match</span>
+                    <pre><code class="text-light" style="font-family: 'Courier New', Courier, monospace;">
+{{ build.failure_details or 'Log details unavailable or log was fully processed.' }}
+                    </code></pre>
+                </div>
+
+                <!-- Remediation Suggestions based on failure type -->
+                {% if build.status == 'FAILURE' %}
+                <div class="remediation-box mt-4">
+                    <h5 class="text-white fw-bold mb-3"><i class="fas fa-lightbulb text-warning me-2"></i> Suggested Actions</h5>
+                    <ul class="mb-0 remediation-text ps-3">
+                        {% if build.failure_type == 'Dependency Error' %}
+                        <li class="mb-2">Verify that all required packages exist in the external registry.</li>
+                        <li class="mb-2">Check your <code>requirements.txt</code> or <code>package.json</code> for missing version pinning mapping.</li>
+                        <li>Ensure network connectivity from build runner to the public repository.</li>
+                        {% elif build.failure_type == 'Test Failure' %}
+                        <li class="mb-2">Identify the specific failing assertions from the text above.</li>
+                        <li class="mb-2">Ensure the build environment matches expected testing conditions (e.g. env vars).</li>
+                        <li>Re-run tests locally to replicate the problem.</li>
+                        {% elif build.failure_type == 'Environment Issue' %}
+                        <li class="mb-2">Verify disk space and I/O resources on the allocated Jenkins worker.</li>
+                        <li class="mb-2">Ensure Docker daemon is active and user permissions are intact.</li>
+                        <li>Check network routes and firewall rules for the build slave.</li>
+                        {% elif build.failure_type == 'Build Failure' %}
+                        <li class="mb-2">Check the syntactic correctness of the code checked into the branch.</li>
+                        <li class="mb-2">Perform a local build using your make/npm/maven toolchain.</li>
+                        <li>Ensure correct compiler versions are installed (e.g. Node 18+, JDK 17).</li>
+                        {% elif build.failure_type in ['Dynamic Analysis Extraction', 'Extracted Context', 'LLM Infrastructure Crash'] %}
+                        <li class="mb-2">Carefully review the explicitly extracted exception stack trace isolated in the context window above.</li>
+                        <li class="mb-2">Cross-reference the <strong>{{ build.root_cause_title }}</strong> against recent commit changes to the pipeline script or active compiler environment.</li>
+                        <li>Consider passing the isolated native trace into an active local Desktop LLM Assistant for automated interactive remediation patching.</li>
+                        {% else %}
+                        <li>Check your repository codebase configurations or manually verify the underlying target execution infrastructure framework.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
