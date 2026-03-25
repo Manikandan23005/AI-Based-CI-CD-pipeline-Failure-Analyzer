@@ -15,7 +15,7 @@ services:
       - JENKINS_URL=http://172.17.0.1:8080
       - JENKINS_USER=manikandan791
       - JENKINS_TOKEN=mani12345678
-      - GROQ_API_KEY={GROQ_API_KEY}
+      - GROQ_API_KEY=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
     # Overwrite Dockerfile command to use Flask dev server in debug mode mapping auto-refresh
     command: >
       bash -c "poetry install && flask run --host=0.0.0.0 --port=5000"
