@@ -8,7 +8,6 @@ import logging
 
 def sync_data():
     with app.app_context():
-        # Ensure DB tables exist but do NOT drop them for incremental syncing
         db.create_all()
 
         try:
@@ -34,7 +33,6 @@ def sync_data():
                 for b in builds:
                     build_number = b['number']
                     
-                    # Check if build is already parsed in our DB skip if true, UNLESS it's a legacy error that needs LLM re-parsing
                     existing_build = PipelineBuild.query.filter_by(job_id=job.id, build_number=build_number).first()
                     is_update = False
                     

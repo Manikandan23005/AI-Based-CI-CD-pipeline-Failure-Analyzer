@@ -8,7 +8,7 @@ def generate_mock_data():
     with app.app_context():
         db.create_all()
 
-        # Create jobs if not exist
+
         if PipelineJob.query.count() == 0:
             frontend_job = PipelineJob(name="Frontend-UI-Deploy", jenkins_url="http://localhost:8080/job/Frontend-UI-Deploy")
             backend_job = PipelineJob(name="Backend-API-Deploy", jenkins_url="http://localhost:8080/job/Backend-API-Deploy")
@@ -16,7 +16,7 @@ def generate_mock_data():
             db.session.add(backend_job)
             db.session.commit()
 
-        # Delete old mock builds
+
         PipelineBuild.query.delete()
         db.session.commit()
 
@@ -46,7 +46,7 @@ def generate_mock_data():
                     failure_type = random.choice([k for k in mock_logs.keys() if k != 'None'])
                     snippet = mock_logs[failure_type]
 
-                # Using analyzer to classify mock logs to show it really works
+
                 analyzed_type, final_snippet = analyzer.analyze(snippet)
 
                 build = PipelineBuild(

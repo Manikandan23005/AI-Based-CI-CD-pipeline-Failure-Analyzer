@@ -13,14 +13,13 @@ import threading
 import time
 
 app = Flask(__name__)
-# Configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///analyzer.db?timeout=20'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'dev-secret-key-123'
 
 db.init_app(app)
 
-# Authentication Config
+
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'warning'
@@ -44,7 +43,7 @@ def manual_sync():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-# --- Authentication Routes ---
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -89,9 +88,9 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('landing.html'))
+    return render_template('landing.html')
 
-# --- Main Application Routes ---
+
 
 @app.route('/')
 def landing():
@@ -103,7 +102,6 @@ def landing():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    """Main dashboard view summarizing pipeline health and failures."""
     total_builds = PipelineBuild.query.count()
     failed_builds = PipelineBuild.query.filter_by(status='FAILURE').count()
     success_builds = PipelineBuild.query.filter_by(status='SUCCESS').count()
@@ -133,13 +131,11 @@ def build_details(build_id):
 
 @app.errorhandler(404)
 def not_found_error(error):
-    """Intercept generic ghost endpoints (e.g. purged IDs) routing back perfectly to the dashboard."""
     return redirect(url_for('dashboard'))
 
 @app.route('/api/stats')
 @login_required
 def api_stats():
-    """API endpoint providing aggregated statistics for Chart.js"""
     success = PipelineBuild.query.filter_by(status='SUCCESS').count()
     failed = PipelineBuild.query.filter_by(status='FAILURE').count()
     aborted = PipelineBuild.query.filter_by(status='ABORTED').count()

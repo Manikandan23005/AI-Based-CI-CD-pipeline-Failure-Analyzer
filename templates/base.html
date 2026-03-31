@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CI/CD Pipeline Failure Analyzer</title>
-    <!-- Strict Manual Fetch Architecture over Meta-Refresh overrides -->
-    <!-- Bootstrap CSS -->
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Google Fonts -->
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body class="bg-dark text-light">
 
-    <!-- Cyberpunk Animated Background Container -->
+
     <div id="particles-js"></div>
 
     {% if current_user.is_authenticated %}
-    <!-- Sidebar -->
+
     <div class="sidebar">
         <h4 class="text-center py-4 bg-primary text-white sidebar-title">
             <i class="fas fa-network-wired pulse-badge"></i> CI/CD Analyzer
@@ -40,12 +40,12 @@
     </div>
     {% endif %}
 
-    <!-- Main Content -->
+
     <div class="main-content ps-5 pe-5 pt-4 pb-4" {% if not current_user.is_authenticated %}style="margin-left: 0; width: 100vw;"{% endif %}>
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Bootstrap Bundle with Popper -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
@@ -70,7 +70,7 @@
         }
     </script>
     
-    <!-- Particles.js Library for Animated Aesthetics -->
+
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     {% block scripts %}{% endblock %}

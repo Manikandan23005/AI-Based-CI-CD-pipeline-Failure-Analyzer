@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // ----------------------------------------------------
-    // 1. Initialize Particles.js Background
-    // ----------------------------------------------------
+
+
+
     if (window.particlesJS) {
         particlesJS('particles-js', {
             "particles": {
@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ----------------------------------------------------
-    // 2. Render Neon Doughnut Chart with Total Center Text
-    // ----------------------------------------------------
+
+
+
     const chartElement = document.getElementById('failureChart');
     if (!chartElement) return;
 
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             const ctx = chartElement.getContext('2d');
             
-            // Map strictly to Successful, Failed, Aborted
+
             const gradientSuccess = ctx.createLinearGradient(0, 0, 0, 400);
             gradientSuccess.addColorStop(0, 'rgba(57, 255, 20, 1)');
             gradientSuccess.addColorStop(1, 'rgba(57, 255, 20, 0.4)');
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             gradientAborted.addColorStop(0, 'rgba(255, 145, 0, 1)');
             gradientAborted.addColorStop(1, 'rgba(255, 145, 0, 0.4)');
 
-            // Custom Plugin to draw text in the middle of a Doughnut Chart
+
             const centerTextPlugin = {
                 id: 'centerText',
                 beforeDraw: function(chart) {

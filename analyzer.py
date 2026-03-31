@@ -3,11 +3,6 @@ import json
 from openai import OpenAI
 
 class PipelineAnalyzer:
-    """
-    A true LLM-powered extraction engine directly invoking Groq natively
-    to generate robust context mapping eliminating regex restrictions!
-    """
-
     def analyze(self, log_content: str, job_config: str = "") -> dict:
         api_key = os.environ.get("GROQ_API_KEY")
         
@@ -32,7 +27,7 @@ class PipelineAnalyzer:
             api_key=api_key
         )
         
-        # Protect LLM Context window limits natively mapping exactly to Groq 8k models
+
         truncated_log = log_content[-6000:]
         truncated_config = job_config[:3000] if job_config else "N/A"
         
@@ -74,7 +69,7 @@ Jenkins Console Output Trace:
             }
             
         except Exception as e:
-            # Native Static Fallback if API rate limits or API key lacks permissions
+
             lines = log_content.splitlines()
             error_keywords = ['exception', 'error:', 'error=', 'failed:', 'fatal:', 'traceback', 'compilation errors']
             for i in range(len(lines)-1, -1, -1):
@@ -95,7 +90,7 @@ Jenkins Console Output Trace:
                         'snippet': snippet.strip()
                     }
 
-            # Absolute fallback if no error words exist at all
+
             return {
                 'failure_type': 'Extracted Context',
                 'root_cause_title': 'Abrupt Stream Termination',

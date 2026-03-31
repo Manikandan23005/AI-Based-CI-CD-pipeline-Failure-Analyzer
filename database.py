@@ -30,10 +30,10 @@ class PipelineBuild(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     duration_ms = db.Column(db.Integer, default=0)
     
-    # Optional: store truncated logs or specific error messages
+
     log_snippet = db.Column(db.Text, nullable=True)
     
-    # Classification results
+
     failure_type = db.Column(db.String(100), default='None')
     failure_details = db.Column(db.Text, nullable=True)
     root_cause_title = db.Column(db.String(250), nullable=True)
